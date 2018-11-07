@@ -20,7 +20,16 @@ _command_time_precmd() {
 
 zsh_command_time() {
   if [ -n "$ZSH_COMMAND_TIME" ]; then
-    timer_show=$(printf '%dh:%02dm:%02ds\n' $(($ZSH_COMMAND_TIME/3600)) $(($ZSH_COMMAND_TIME%3600/60)) $(($ZSH_COMMAND_TIME%60)))
+    hours=$(($ZSH_COMMAND_TIME/3600))
+    min=$(($ZSH_COMMAND_TIME/60))
+    sec=$(($ZSH_COMMAND_TIME%60))
+    if [ "$ZSH_COMMAND_TIME" -le 60 ]; then
+      timer_show="$ZSH_COMMAND_TIME s"
+    elif [ "$ZSH_COMMAND_TIME" -gt 60 ] && [ "$ZSH_COMMAND_TIME" -le 3600 ]; then
+      timer_show="$min min $sec s"
+    else
+      timer_show="$hours h $min min $sec s"
+    fi
     print -P '%F{$ZSH_COMMAND_TIME_COLOR}`printf "${ZSH_COMMAND_TIME_MSG}\n" "$timer_show"`%f'
   fi
 }
