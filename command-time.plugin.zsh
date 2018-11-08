@@ -21,8 +21,8 @@ _command_time_precmd() {
 zsh_command_time() {
   if [ -n "$ZSH_COMMAND_TIME" ]; then
     hours=$(($ZSH_COMMAND_TIME/3600))
-    min=$(($ZSH_COMMAND_TIME/60))
-    sec=$(($ZSH_COMMAND_TIME%60))
+    min=$(($ZSH_COMMAND_TIME%3600/60))
+    sec=$(($ZSH_COMMAND_TIME%3600%60))
     if [ "$ZSH_COMMAND_TIME" -le 60 ]; then
       timer_show="$ZSH_COMMAND_TIME s"
     elif [ "$ZSH_COMMAND_TIME" -gt 60 ] && [ "$ZSH_COMMAND_TIME" -le 3600 ]; then
