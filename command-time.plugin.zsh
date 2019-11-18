@@ -19,16 +19,22 @@ _command_time_precmd() {
 }
 
 zsh_command_time() {
+  day=$((60*60*24))
+  hour=$((60*60))
+  min=$((60))
+
   if [ -n "$ZSH_COMMAND_TIME" ]; then
-    hours=$(($ZSH_COMMAND_TIME/3600))
-    min=$(($ZSH_COMMAND_TIME%3600/60))
-    sec=$(($ZSH_COMMAND_TIME%3600%60))
-    if [ "$ZSH_COMMAND_TIME" -le 60 ]; then
-      timer_show="$ZSH_COMMAND_TIME s"
-    elif [ "$ZSH_COMMAND_TIME" -gt 60 ] && [ "$ZSH_COMMAND_TIME" -le 3600 ]; then
-      timer_show="$min min $sec s"
-    else
-      timer_show="$hours h $min min $sec s"
+    d=$(($ZSH_COMMAND_TIME/$day))
+    h=$(($ZSH_COMMAND_TIME%$day/$hour))
+    m=$(($ZSH_COMMAND_TIME%$day%$hour/$min))
+    s=$(($ZSH_COMMAND_TIME%$day%$hour%$min))
+
+    if [ "$ZSH_COMMAND_TIME" -le $min ]; then
+      timer_show="$s s"
+    elif [ "$ZSH_COMMAND_TIME" -gt $min ] && [ "$ZSH_COMMAND_TIME" -le $hour ]; then
+      timer_show="$m m $s s"
+    elif [ "$ZSH_COMMAND_TIME" -gt $hour ] && [ "$ZSH_COMMAND_TIME" -le $day ]; then
+      timer_show="$h h $m m $s s"
     fi
     print -P '%F{$ZSH_COMMAND_TIME_COLOR}`printf "${ZSH_COMMAND_TIME_MSG}\n" "$timer_show"`%f'
   fi
